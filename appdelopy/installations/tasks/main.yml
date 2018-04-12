@@ -16,7 +16,7 @@
   shell: npm config set strict-ssl false
   args:
     chdir: "{{ folder_node }}"
-    creates: /tmp/test
+    creates: /tmp/nologin
 - name: "symlinking nodejs to node"
   file:
     src: /usr/bin/nodejs
@@ -35,7 +35,7 @@
   shell: pm2 start hello.js
   args:
     chdir: "{{ folder_node }}"
-    creates: /tmp/test
+    creates: /tmp/nologin
 - name: create fake 'nologin' shell
   file: 
     path: /tmp/nologin 

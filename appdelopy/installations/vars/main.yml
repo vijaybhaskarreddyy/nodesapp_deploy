@@ -1,0 +1,4 @@
+---
+# vars file for installations
+packages: [ "nodejs", "npm", "nginx" ]
+folder_node: /home/ansible

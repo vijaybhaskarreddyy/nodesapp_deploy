@@ -1,0 +1,49 @@
+---
+# tasks file for installations
+- name: "update packages"
+  apt:
+    update_cache: yes
+# Nodejs installation
+#https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-an-ubuntu-14-04-server
+- name: "installing nodejs && requried packages on ubuntu 14.04"
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ packages }}"
+ #https://stackoverflow.com/questions/21855035/ssl-error-cert-untrusted-while-using-npm-command
+- name: "byepass the ssl "
+  shell: npm config set strict-ssl false
+  args:
+    chdir: "{{ folder_node }}"
+    creates: /tmp/test
+- name: "symlinking nodejs to node"
+  file:
+    src: /usr/bin/nodejs
+    dest: /usr/bin/node
+    state: link
+- name: "installing pm2 using npm"
+  npm:
+    name: pm2
+    global: yes
+    state: present
+- name: "creating helloword nodjes app"
+  template:
+    src: hello.js.j2
+    dest: "{{ folder_node }}/hello.js"
+- name: "starting nodejs app "
+  shell: pm2 start hello.js
+  args:
+    chdir: "{{ folder_node }}"
+    creates: /tmp/test
+- name: create fake 'nologin' shell
+  file: 
+    path: /tmp/nologin 
+    state: touch
+- name: "configuring Reversproxy"
+  template:
+    src: default.j2
+    dest: /etc/nginx/sites-available/default
+  notify: Restart
+
+

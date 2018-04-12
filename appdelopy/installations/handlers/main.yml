@@ -1,0 +1,6 @@
+---
+# handlers file for installations
+- name: Restart
+  service: 
+    name: nginx
+    state: restarted
